@@ -774,6 +774,211 @@
     text-align: right;
   }
 
+  /* PR badge */
+  .pr-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-pip);
+    padding: 1px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+
+  /* At-tier text */
+  .at-tier {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Graduation modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 18, 32, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 28px 24px 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(11,18,32,0.2);
+    animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .modal-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .modal-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .modal-sub {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .modal-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .stat-cell {
+    background: var(--bg);
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  .modal-sparkline {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .modal-next {
+    background: var(--accent-soft);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .modal-next .next-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-pip);
+    margin-bottom: 4px;
+  }
+  .modal-next .next-name {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 15px;
+  }
+  .modal-btn {
+    background: var(--accent);
+    color: white;
+    width: 100%;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .modal-btn:hover { opacity: 0.9; }
+
+  /* Weekly summary */
+  .weekly-summary {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .weekly-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .weekly-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .weekly-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .weekly-stat {
+    text-align: center;
+  }
+  .weekly-stat-value {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .weekly-stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .weekly-dismiss {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 16px;
+    color: var(--text-faint);
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .weekly-dismiss:hover { color: var(--text); background: var(--bg); }
+
   @media (max-width: 480px) {
     .skill-head { gap: 10px; padding: 12px 14px; }
     .readout { min-width: 70px; }
@@ -1040,13 +1245,15 @@ let state = {
   viewPhase: 1,
   deloadActive: false,
   schedule: { 0: false, 1: true, 2: false, 3: true, 4: false, 5: true, 6: true }, // Sun-Sat; default Mon/Wed/Fri/Sat
-  skills: {},          // skillId -> { currentTierIdx, gatesHit (number or {L,R}), bestValue, lastSession }
+  weeklySummaryDismissedAt: null,
+  skills: {},          // skillId -> { currentTierIdx, gatesHit, bestValue, lastSession, tierStartedAt, lastPR }
   recentSessions: {}   // skillId -> [last sessions]
 };
 let activeCardId = null;
 let unsub = null;
 let settingsOpen = false;
-let restDayOverride = false; // ephemeral — resets on reload/day change
+let restDayOverride = false; // ephemeral
+let graduationModal = null; // ephemeral; { skillName, completedTier, nextTier, days, sessionCount, prCount, sparklinePoints, gateTarget, type }
 // Form state for in-progress logging — { skillId: { holdSets: [...], notes, reps, sets, side } }
 let formState = {};
 
@@ -1107,6 +1314,7 @@ async function loadState() {
     state.gateThreshold = data.gateThreshold || 3;
     state.deloadActive = data.deloadActive || false;
     state.schedule = data.schedule || state.schedule;
+    state.weeklySummaryDismissedAt = data.weeklySummaryDismissedAt || null;
     state.skills = data.skills || {};
     state.viewPhase = data.currentPhase || 1;
   } else {
@@ -1130,7 +1338,9 @@ function initSkillState(skill) {
     currentTierIdx: 0,
     gatesHit: tier?.perSide ? { L: 0, R: 0 } : 0,
     bestValue: 0,
-    lastSession: null
+    lastSession: null,
+    tierStartedAt: Date.now(),
+    lastPR: null
   };
 }
 
@@ -1143,6 +1353,9 @@ function migrateGateShape(skill) {
   } else if (!tier.perSide && typeof cur.gatesHit === 'object') {
     cur.gatesHit = 0;
   }
+  // Migrate missing tier-start timestamp for existing users
+  if (!cur.tierStartedAt) cur.tierStartedAt = cur.lastSession || Date.now();
+  if (cur.lastPR === undefined) cur.lastPR = null;
 }
 
 async function loadRecentSessions() {
@@ -1176,6 +1389,7 @@ async function saveState() {
     gateThreshold: state.gateThreshold,
     deloadActive: state.deloadActive,
     schedule: state.schedule,
+    weeklySummaryDismissedAt: state.weeklySummaryDismissedAt,
     skills: state.skills,
     updatedAt: serverTimestamp()
   }, { merge: true });
@@ -1186,10 +1400,17 @@ async function logSession(skillId, sessionData) {
   const tier = skill.tiers[state.skills[skillId].currentTierIdx];
   const gateMet = sessionMeetsGate(sessionData, tier);
   const inDeload = state.deloadActive;
+  const cur = state.skills[skillId];
+
+  // PR detection — must beat existing best, and existing best must be > 0
+  // (first log at a new tier sets baseline, not a PR)
+  const prevBest = cur.bestValue || 0;
+  const wasPR = !inDeload && prevBest > 0 && sessionData.value > prevBest;
+  const prDelta = wasPR ? (sessionData.value - prevBest) : 0;
 
   const entry = {
     skillId,
-    tierIdx: state.skills[skillId].currentTierIdx,
+    tierIdx: cur.currentTierIdx,
     tierName: tier.name,
     type: tier.type,
     value: sessionData.value,       // max single value
@@ -1198,14 +1419,18 @@ async function logSession(skillId, sessionData) {
     side: sessionData.side || null,
     notes: sessionData.notes || "",
     gateMet,
+    wasPR,
+    prDelta: prDelta || null,
     deload: inDeload,
     date: serverTimestamp()
   };
   await addDoc(sessionsRef(), entry);
 
-  // Update best (highest single value ever seen)
-  const cur = state.skills[skillId];
-  if (sessionData.value > (cur.bestValue || 0)) cur.bestValue = sessionData.value;
+  // Update best
+  if (sessionData.value > prevBest) cur.bestValue = sessionData.value;
+
+  // Record PR for 24h badge
+  if (wasPR) cur.lastPR = { amount: prDelta, at: Date.now() };
 
   // Increment gate (skip during deload)
   if (gateMet && !inDeload) {
@@ -1222,9 +1447,12 @@ async function logSession(skillId, sessionData) {
   await saveState();
   await loadRecentSessions();
 
-  // Toast
+  // Toast — PR takes precedence over gate
   if (inDeload) {
     showToast("Logged (deload — gate not counted).");
+  } else if (wasPR) {
+    const unit = tier.type === 'hold' ? 's' : '';
+    showToast(`PR. +${prDelta}${unit}.`);
   } else if (gateMet) {
     const hitCount = tier.perSide
       ? `${cur.gatesHit.L}L · ${cur.gatesHit.R}R / ${state.gateThreshold}`
@@ -1233,7 +1461,6 @@ async function logSession(skillId, sessionData) {
   } else {
     showToast("Logged.");
   }
-  // Clear form state for this skill
   delete formState[skillId];
   render();
 }
@@ -1252,15 +1479,51 @@ async function advanceTier(skillId) {
   const skill = SKILLS.find(s => s.id === skillId);
   const cur = state.skills[skillId];
   if (cur.currentTierIdx < skill.tiers.length - 1) {
+    const completedTierIdx = cur.currentTierIdx;
+    const summary = buildGraduationSummary(skillId, completedTierIdx);
+
     cur.currentTierIdx += 1;
     const nextTier = skill.tiers[cur.currentTierIdx];
     cur.gatesHit = nextTier.perSide ? { L: 0, R: 0 } : 0;
     cur.bestValue = 0;
+    cur.tierStartedAt = Date.now();
+    cur.lastPR = null;
     await saveState();
-    showToast(`Advanced to ${nextTier.name}.`);
+
+    // Show graduation modal (purely celebratory; advance already happened)
+    graduationModal = summary;
     render();
   }
 }
+
+function buildGraduationSummary(skillId, completedTierIdx) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const tier = skill.tiers[completedTierIdx];
+  const cur = state.skills[skillId];
+  const sessions = (state.recentSessions[skillId] || []).filter(s => s.tierIdx === completedTierIdx);
+  const startedAt = cur.tierStartedAt;
+  const days = startedAt ? Math.max(1, Math.floor((Date.now() - startedAt) / (1000*60*60*24))) : null;
+  const prCount = sessions.filter(s => s.wasPR).length;
+  // Oldest-to-newest for sparkline
+  const sparklinePoints = sessions.slice().reverse().map(s => s.value).filter(v => typeof v === 'number');
+  const gateTarget = tier.type === 'hold' ? tier.gate.seconds : tier.gate.reps;
+  return {
+    skillName: skill.name,
+    completedTier: tier.name,
+    nextTier: skill.tiers[completedTierIdx + 1]?.name,
+    days,
+    sessionCount: sessions.length,
+    prCount,
+    sparklinePoints,
+    gateTarget,
+    type: tier.type
+  };
+}
+
+window.closeGraduationModal = function() {
+  graduationModal = null;
+  render();
+};
 
 async function regressTier(skillId) {
   const skill = SKILLS.find(s => s.id === skillId);
@@ -1270,6 +1533,8 @@ async function regressTier(skillId) {
     const prevTier = skill.tiers[cur.currentTierIdx];
     cur.gatesHit = prevTier.perSide ? { L: 0, R: 0 } : 0;
     cur.bestValue = 0;
+    cur.tierStartedAt = Date.now();
+    cur.lastPR = null;
     await saveState();
     showToast("Stepped back one tier.");
     render();
@@ -1294,6 +1559,7 @@ window.resetAll = async function() {
   state.gateThreshold = 3;
   state.viewPhase = 1;
   state.deloadActive = false;
+  state.weeklySummaryDismissedAt = null;
   state.skills = {};
   for (const s of SKILLS) state.skills[s.id] = initSkillState(s);
   state.recentSessions = {};
@@ -1461,15 +1727,148 @@ function renderMain() {
   } else {
     renderPhases();
   }
+  if (graduationModal) renderGraduationModal();
 }
+
+function renderGraduationModal() {
+  const s = graduationModal;
+  const sparkline = s.sparklinePoints.length >= 2 ? buildModalSparkline(s.sparklinePoints, s.gateTarget) : '';
+  const html = `
+    <div class="modal-overlay" onclick="if(event.target===this)window.closeGraduationModal()">
+      <div class="modal">
+        <div class="modal-eyebrow">Tier cleared</div>
+        <div class="modal-title">${s.completedTier}</div>
+        <div class="modal-sub">${s.skillName}</div>
+        <div class="modal-stats">
+          <div class="stat-cell">
+            <div class="stat-value">${s.days ?? '—'}${s.days !== null ? 'd' : ''}</div>
+            <div class="stat-label">at tier</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">${s.sessionCount}</div>
+            <div class="stat-label">sessions</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">${s.prCount}</div>
+            <div class="stat-label">PRs</div>
+          </div>
+        </div>
+        ${sparkline ? `<div class="modal-sparkline">${sparkline}</div>` : ''}
+        ${s.nextTier ? `
+          <div class="modal-next">
+            <div class="next-label">Next</div>
+            <div class="next-name">${s.nextTier}</div>
+          </div>
+        ` : ''}
+        <button class="modal-btn" onclick="window.closeGraduationModal()">${s.nextTier ? 'Continue' : 'Done'}</button>
+      </div>
+    </div>
+  `;
+  // Append modal overlay to body
+  let modalRoot = document.getElementById('modalRoot');
+  if (!modalRoot) {
+    modalRoot = document.createElement('div');
+    modalRoot.id = 'modalRoot';
+    document.body.appendChild(modalRoot);
+  }
+  modalRoot.innerHTML = html;
+}
+
+function buildModalSparkline(points, gateTarget) {
+  const w = 360, h = 64, pad = 8;
+  const min = Math.min(...points, 0);
+  const max = Math.max(...points, gateTarget || 0);
+  const range = max - min || 1;
+  const stepX = points.length > 1 ? (w - pad * 2) / (points.length - 1) : 0;
+  const path = points.map((v, i) => {
+    const x = pad + i * stepX;
+    const y = h - pad - ((v - min) / range) * (h - pad * 2);
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const gateY = gateTarget != null
+    ? h - pad - ((gateTarget - min) / range) * (h - pad * 2)
+    : null;
+  const lastX = pad + (points.length - 1) * stepX;
+  const lastY = h - pad - ((points[points.length - 1] - min) / range) * (h - pad * 2);
+  return `<svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="max-width:100%">
+    ${gateY !== null ? `<line x1="${pad}" y1="${gateY}" x2="${w - pad}" y2="${gateY}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3,4" opacity="0.5" />` : ''}
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="4" fill="var(--accent)" />
+  </svg>`;
+}
+
+function clearModal() {
+  const r = document.getElementById('modalRoot');
+  if (r) r.innerHTML = '';
+}
+
+// Weekly summary
+function computeWeeklySummary() {
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const allSessions = Object.values(state.recentSessions).flat()
+    .filter(s => {
+      const d = s.date?.toDate?.()?.getTime();
+      return d && d >= cutoff;
+    });
+  if (allSessions.length === 0) return null;
+  const distinctDays = new Set(allSessions.map(s => s.date.toDate().toDateString())).size;
+  const distinctSkills = new Set(allSessions.map(s => s.skillId)).size;
+  const prCount = allSessions.filter(s => s.wasPR).length;
+  const gateHits = allSessions.filter(s => s.gateMet && !s.deload).length;
+  return { distinctDays, distinctSkills, totalEntries: allSessions.length, prCount, gateHits };
+}
+
+function shouldShowWeeklySummary() {
+  const summary = computeWeeklySummary();
+  if (!summary || summary.distinctDays < 3) return null;
+  if (state.weeklySummaryDismissedAt) {
+    const days = (Date.now() - state.weeklySummaryDismissedAt) / (1000 * 60 * 60 * 24);
+    if (days < 6) return null;
+  }
+  return summary;
+}
+
+function renderWeeklySummary(summary) {
+  return `<div class="weekly-summary">
+    <button class="weekly-dismiss" onclick="window.dismissWeeklySummary()" title="Dismiss until next week">×</button>
+    <div class="weekly-eyebrow">Last 7 days</div>
+    <div class="weekly-title">Week in review</div>
+    <div class="weekly-stats">
+      <div class="weekly-stat">
+        <div class="weekly-stat-value">${summary.distinctDays}</div>
+        <div class="weekly-stat-label">days</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-value">${summary.distinctSkills}</div>
+        <div class="weekly-stat-label">skills</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-value">${summary.prCount}</div>
+        <div class="weekly-stat-label">PRs</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-value">${summary.gateHits}</div>
+        <div class="weekly-stat-label">gate hits</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+window.dismissWeeklySummary = async function() {
+  state.weeklySummaryDismissedAt = Date.now();
+  await saveState();
+  render();
+};
 
 function renderToday() {
   const isPractice = isPracticeToday();
   const showRest = !isPractice && !restDayOverride;
   const weekStripHtml = renderWeekStrip();
+  const summary = shouldShowWeeklySummary();
+  const weeklyHtml = summary ? renderWeeklySummary(summary) : '';
 
   if (showRest) {
-    renderRestDay(weekStripHtml);
+    renderRestDay(weekStripHtml, weeklyHtml);
     return;
   }
 
@@ -1481,7 +1880,7 @@ function renderToday() {
        </div>`
     : '';
 
-  let html = weekStripHtml + `
+  let html = weekStripHtml + weeklyHtml + `
     <div class="today-header">
       <div class="today-date">${today}</div>
       <div class="today-title">Today's session</div>
@@ -1523,11 +1922,12 @@ function renderToday() {
 
   document.getElementById("main").innerHTML = html;
   reattachActiveCard();
+  if (!graduationModal) clearModal();
 }
 
-function renderRestDay(weekStripHtml) {
+function renderRestDay(weekStripHtml, weeklyHtml) {
   const today = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-  const html = weekStripHtml + `
+  const html = weekStripHtml + (weeklyHtml || '') + `
     <div class="rest-screen">
       <div class="rest-eyebrow">${today}</div>
       <div class="rest-title">Rest day</div>
@@ -1538,6 +1938,7 @@ function renderRestDay(weekStripHtml) {
     </div>
   `;
   document.getElementById("main").innerHTML = html;
+  if (!graduationModal) clearModal();
 }
 
 function renderWeekStrip() {
@@ -1614,6 +2015,7 @@ function renderPhases() {
 
   document.getElementById("main").innerHTML = html;
   reattachActiveCard();
+  if (!graduationModal) clearModal();
 }
 
 function reattachActiveCard() {
@@ -1722,10 +2124,12 @@ function renderSkillCard(skill, opts) {
             ${cardStatus === 'complete' ? '<span class="check">✓</span>' : ''}
             ${skill.name}
             ${isActive ? `<span class="recency ${recency.className}">${recency.text}</span>` : ''}
+            ${isActive ? renderPRBadge(cur, cardTier) : ''}
           </div>
           <div class="tier-name">
             ${cardStatus === 'upcoming' ? 'starts at: ' : ''}${cardTier.name}
           </div>
+          ${isActive ? renderAtTier(skill, cur) : ''}
         </div>
         <div class="readout">
           <div class="readout-value">
@@ -1906,6 +2310,24 @@ function renderSparkline(skillId, sessions, tier) {
       </svg>
     </div>
   `;
+}
+
+function renderPRBadge(cur, tier) {
+  if (!cur.lastPR || !cur.lastPR.at) return '';
+  const ageMs = Date.now() - cur.lastPR.at;
+  if (ageMs > 24 * 60 * 60 * 1000) return '';
+  const unit = tier.type === 'hold' ? 's' : '';
+  return `<span class="pr-badge" title="Recent personal record">+${cur.lastPR.amount}${unit} PR</span>`;
+}
+
+function renderAtTier(skill, cur) {
+  const sessionsThisTier = (state.recentSessions[skill.id] || []).filter(s => s.tierIdx === cur.currentTierIdx).length;
+  const days = cur.tierStartedAt ? Math.max(0, Math.floor((Date.now() - cur.tierStartedAt) / (1000*60*60*24))) : null;
+  if (days === null && sessionsThisTier === 0) return '';
+  const parts = [];
+  if (days !== null) parts.push(days === 0 ? 'today' : `${days}d`);
+  parts.push(`${sessionsThisTier} ${sessionsThisTier === 1 ? 'session' : 'sessions'}`);
+  return `<div class="at-tier">at tier: ${parts.join(' · ')}</div>`;
 }
 
 function escapeHtml(str) {
