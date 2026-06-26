@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B1220">
+<title>Calisthenics Progression</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --surface-2: #FAFBFC;
+    --border: #E4E7EC;
+    --border-strong: #CDD2DA;
+    --text: #0B1220;
+    --text-muted: #5A6675;
+    --text-faint: #98A2B3;
+    --accent: #1F6B4A;
+    --accent-soft: #E6F0EB;
+    --accent-pip: #2E8B63;
+    --warn: #B45309;
+    --warn-soft: #FEF3E2;
+    --danger: #B42318;
+    --shadow: 0 1px 2px rgba(11, 18, 32, 0.04), 0 0 0 1px var(--border);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, select { font-family: inherit; font-size: inherit; color: inherit; }
+
+  /* Layout */
+  .app { max-width: 720px; margin: 0 auto; padding: 0 16px 80px; }
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+    padding: 16px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .top-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .brand {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .brand span { color: var(--accent); }
+  .auth-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+  .auth-pill.ok { color: var(--accent); border-color: var(--accent-soft); background: var(--accent-soft); }
+
+  /* Phase header */
+  .phase-header {
+    margin-top: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .phase-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .phase-eyebrow .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  .phase-name { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .phase-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .phase-goal { font-size: 14px; color: var(--text); margin-top: 10px; line-height: 1.55; }
+  .phase-progress {
+    margin-top: 14px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 12px;
+    color: var(--text-muted);
+  }
+  .progress-track {
+    flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
+
+  /* Stream sections */
+  .stream-section { margin-top: 24px; }
+  .stream-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    padding: 0 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .stream-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* Skill card */
+  .skill-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.15s ease;
+  }
+  .skill-card.complete {
+    background: var(--surface-2);
+  }
+  .skill-head {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .skill-info { flex: 1; min-width: 0; }
+  .skill-name {
+    font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .skill-name .check {
+    color: var(--accent);
+    font-size: 14px;
+  }
+  .tier-name {
+    font-size: 13px; color: var(--text-muted); margin-top: 2px;
+    font-family: var(--mono);
+  }
+  .tier-name .arrow { color: var(--text-faint); margin: 0 6px; }
+
+  /* Readout */
+  .readout {
+    text-align: right;
+    min-width: 84px;
+  }
+  .readout-value {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .readout-value .unit {
+    font-size: 11px; color: var(--text-faint); margin-left: 2px; font-weight: 500;
+  }
+  .readout-target {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .readout-target.met { color: var(--accent); }
+
+  /* Gate pips */
+  .gate-pips {
+    display: flex; gap: 4px;
+    padding: 0 16px 12px;
+    align-items: center;
+  }
+  .gate-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .pip {
+    width: 18px; height: 6px;
+    background: var(--border);
+    border-radius: 2px;
+    transition: background 0.2s ease;
+  }
+  .pip.filled { background: var(--accent-pip); }
+
+  /* Card expanded */
+  .skill-body {
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    display: none;
+    background: var(--surface-2);
+  }
+  .skill-card.open .skill-body { display: block; }
+  .skill-card.open .chev { transform: rotate(180deg); }
+  .chev {
+    color: var(--text-faint);
+    font-size: 12px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  /* Log form */
+  .log-row {
+    display: flex; gap: 8px; align-items: center;
+    margin-bottom: 12px;
+  }
+  .input-group {
+    flex: 1; display: flex; align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0 12px;
+    height: 40px;
+  }
+  .input-group:focus-within { border-color: var(--text); }
+  .input-group label {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-right: 8px;
+  }
+  .input-group input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: var(--mono); font-size: 15px; font-weight: 500;
+    width: 100%; min-width: 0;
+  }
+  .input-group .unit {
+    font-family: var(--mono); font-size: 11px; color: var(--text-faint);
+  }
+
+  .btn {
+    height: 40px;
+    padding: 0 16px;
+    background: var(--text);
+    color: var(--surface);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 14px;
+    transition: opacity 0.15s ease;
+  }
+  .btn:hover:not(:disabled) { opacity: 0.85; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+  }
+  .btn.danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--border-strong);
+  }
+  .btn.accent { background: var(--accent); }
+
+  /* Notes */
+  .skill-notes {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    padding: 10px 12px;
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    border-left: 2px solid var(--border-strong);
+    margin-bottom: 12px;
+  }
+
+  /* History */
+  .history { margin-top: 12px; }
+  .history-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+  .history-row {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .history-row:last-child { border-bottom: none; }
+  .history-row.gate { color: var(--accent); }
+  .history-date { color: var(--text-faint); }
+
+  /* Tier controls */
+  .tier-controls {
+    display: flex; gap: 8px; margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Advance banner */
+  .advance-banner {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-pip);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--accent);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .advance-banner button {
+    background: var(--accent); color: white;
+    padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500;
+  }
+
+  /* Phase complete banner */
+  .phase-complete-banner {
+    margin-top: 16px;
+    background: var(--accent);
+    color: white;
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .phase-complete-banner button {
+    background: white; color: var(--accent);
+    padding: 8px 14px; border-radius: 4px; font-size: 13px; font-weight: 600;
+  }
+
+  /* Setup screen */
+  .setup {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 40px;
+    text-align: center;
+  }
+  .setup code {
+    display: block;
+    text-align: left;
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    margin-top: 12px;
+    white-space: pre-wrap;
+    color: var(--text);
+  }
+
+  /* Toggle phase view */
+  .phase-tabs {
+    display: flex; gap: 4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 14px;
+    overflow-x: auto;
+  }
+  .phase-tab {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-radius: 6px;
+    text-align: center;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+  .phase-tab.active { background: var(--text); color: var(--surface); }
+  .phase-tab.locked { color: var(--text-faint); opacity: 0.5; }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding: 16px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .footer button {
+    color: var(--text-muted);
+    text-decoration: underline;
+    margin: 0 6px;
+  }
+
+  /* Settings panel */
+  .settings-panel {
+    background: var(--surface);
+    padding: 16px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+  }
+  .settings-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row label { font-size: 14px; color: var(--text-muted); }
+  .settings-row input[type=number] {
+    width: 60px; text-align: center;
+    background: var(--bg); border: 1px solid var(--border-strong);
+    border-radius: 4px; padding: 4px 8px;
+    font-family: var(--mono);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: var(--surface);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Loading state */
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    .skill-head { gap: 10px; padding: 12px 14px; }
+    .readout { min-width: 70px; }
+    .readout-value { font-size: 18px; }
+    .phase-name { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="top-row">
+      <div class="brand">Progression<span>.</span></div>
+      <div class="auth-pill" id="authStatus">connecting</div>
+    </div>
+    <div class="phase-tabs" id="phaseTabs"></div>
+  </header>
+
+  <main id="main">
+    <div class="loading">Loading your progressions…</div>
+  </main>
+
+  <div class="footer">
+    <button onclick="toggleSettings()">settings</button>
+    <button onclick="exportData()">export</button>
+    <button onclick="resetAll()">reset</button>
+  </div>
+
+  <div id="settingsPanel" style="display:none"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+// ============================================================
+// FIREBASE CONFIG — REPLACE WITH YOUR PROJECT VALUES
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDOtYQoRCUGQwq2wzdCPYVAYZset1GpKNU",
+  authDomain: "calisthenics-progression-e5b08.firebaseapp.com",
+  projectId: "calisthenics-progression-e5b08",
+  storageBucket: "calisthenics-progression-e5b08.firebasestorage.app",
+  messagingSenderId: "640065152411",
+  appId: "1:640065152411:web:56e0abfd305b4f027c6d3e"
+};
+
+// ============================================================
+// PROGRESSION DATA
+// ============================================================
+// Each skill is an ordered list of tiers. User progresses through them
+// by hitting each tier's gate on N separate sessions (default 3).
+// Tiers tagged `phase` belong to that phase's milestone set.
+// `type`: "reps" (sets x reps) or "hold" (seconds).
+// `perSide`: rep target counts per side (e.g. pistol squats).
+
+const SKILLS = [
+  // ============= PUSH STREAM =============
+  {
+    id: "pushup",
+    name: "Push-up progression",
+    stream: "push",
+    tiers: [
+      { phase: 1, name: "Knee push-up",        type: "reps", gate: { reps: 15, sets: 3 }, notes: "Hands under shoulders, hollow body, full ROM." },
+      { phase: 1, name: "Full push-up",        type: "reps", gate: { reps: 20, sets: 3 }, notes: "Phase 1 milestone. Elbows ~45°, ribs down.", milestone: true },
+      { phase: 2, name: "Diamond push-up",     type: "reps", gate: { reps: 12, sets: 3 }, notes: "Thumbs and index touch. Stay in elbows close to ribs." },
+      { phase: 2, name: "Archer push-up",      type: "reps", gate: { reps: 5,  sets: 3, perSide: true }, notes: "Side-loaded. Hover before the bottom-out." },
+      { phase: 3, name: "Pseudo-planche push-up", type: "reps", gate: { reps: 5, sets: 3 }, notes: "Hands at hips, lean forward, straight arms briefly at top." }
+    ]
+  },
+  {
+    id: "dip",
+    name: "Dip progression",
+    stream: "push",
+    tiers: [
+      { phase: 1, name: "Bench dip",         type: "reps", gate: { reps: 12, sets: 3 } },
+      { phase: 1, name: "Parallel bar dip",  type: "reps", gate: { reps: 10, sets: 3 }, notes: "Phase 1 milestone. Shoulders down, full lockout.", milestone: true },
+      { phase: 2, name: "Deep parallel dip", type: "reps", gate: { reps: 8,  sets: 3 }, notes: "Shoulders below elbows." },
+      { phase: 3, name: "Ring dip (turned out)", type: "reps", gate: { reps: 5, sets: 3 }, notes: "Rings to hips, externally rotate at top." }
+    ]
+  },
+  {
+    id: "pike",
+    name: "Pike push-up → HSPU",
+    stream: "push",
+    tiers: [
+      { phase: 1, name: "Pike push-up",      type: "reps", gate: { reps: 8,  sets: 3 }, notes: "Phase 1 milestone. Stack shoulders over hands.", milestone: true },
+      { phase: 2, name: "Feet-elevated pike", type: "reps", gate: { reps: 5,  sets: 3 }, notes: "Box or chair under feet. Walk hands closer." },
+      { phase: 3, name: "Wall HSPU (full ROM)", type: "reps", gate: { reps: 5, sets: 1 }, notes: "Phase 3 milestone. Head touches the floor, full press.", milestone: true },
+      { phase: 4, name: "Strict HSPU (full ROM)", type: "reps", gate: { reps: 5, sets: 1 }, notes: "Free-standing or rings. Head to floor, full lockout.", milestone: true }
+    ]
+  },
+  {
+    id: "handstand",
+    name: "Handstand",
+    stream: "push",
+    tiers: [
+      { phase: 2, name: "Wall handstand, chest-to-wall", type: "hold", gate: { seconds: 45 }, notes: "Phase 2 milestone. Stack shoulders, ribs tucked.", milestone: true },
+      { phase: 2, name: "Wall handstand, belly-to-wall", type: "hold", gate: { seconds: 30 }, notes: "Toes touch wall, full body line." },
+      { phase: 3, name: "Free-standing handstand",       type: "hold", gate: { seconds: 30 }, notes: "Phase 3 milestone. Balance in the fingertips.", milestone: true },
+      { phase: 4, name: "Handstand walk (5 m)",          type: "reps", gate: { reps: 1, sets: 1 }, notes: "Five meters in any direction.", milestone: true }
+    ]
+  },
+  {
+    id: "planche",
+    name: "Planche progression",
+    stream: "push",
+    tiers: [
+      { phase: 2, name: "Tuck planche",          type: "hold", gate: { seconds: 5 },  notes: "Phase 2 milestone. Hips above shoulders, full lean.", milestone: true },
+      { phase: 3, name: "Advanced tuck planche", type: "hold", gate: { seconds: 10 }, notes: "Phase 3 milestone. Flat back, knees off chest.", milestone: true },
+      { phase: 4, name: "Straddle planche",      type: "hold", gate: { seconds: 5 },  notes: "Wide legs, flat back, full protraction.", milestone: true }
+    ]
+  },
+
+  // ============= PULL STREAM =============
+  {
+    id: "pullup",
+    name: "Pull-up progression",
+    stream: "pull",
+    tiers: [
+      { phase: 1, name: "Scap pull-up",         type: "reps", gate: { reps: 10, sets: 3 }, notes: "Depress shoulders without bending arms. Builds the scap base." },
+      { phase: 1, name: "Negative pull-up",     type: "reps", gate: { reps: 5,  sets: 3 }, notes: "3-5s eccentric. Start chin over bar." },
+      { phase: 1, name: "Strict pull-up",       type: "reps", gate: { reps: 8,  sets: 3 }, notes: "Phase 1 milestone. Dead hang start, chin over bar.", milestone: true },
+      { phase: 2, name: "Weighted pull-up",     type: "reps", gate: { reps: 5,  sets: 3 }, notes: "Add load. Maintain dead-hang start." },
+      { phase: 3, name: "Chest-to-bar pull-up", type: "reps", gate: { reps: 5,  sets: 3 }, notes: "Lower sternum touches the bar." },
+      { phase: 4, name: "One-arm pull-up",      type: "reps", gate: { reps: 1,  sets: 1, perSide: true }, notes: "Bands → unassisted.", milestone: true }
+    ]
+  },
+  {
+    id: "row",
+    name: "Row progression",
+    stream: "pull",
+    tiers: [
+      { phase: 1, name: "Australian row (feet on floor)", type: "reps", gate: { reps: 15, sets: 3 } },
+      { phase: 1, name: "Australian row (feet elevated)", type: "reps", gate: { reps: 12, sets: 3 }, notes: "Phase 1 milestone. Hollow body, pull to ribs.", milestone: true },
+      { phase: 2, name: "Archer row",                     type: "reps", gate: { reps: 5,  sets: 3, perSide: true } },
+      { phase: 3, name: "Front lever row (tuck)",         type: "reps", gate: { reps: 5,  sets: 3 } }
+    ]
+  },
+  {
+    id: "frontlever",
+    name: "Front lever progression",
+    stream: "pull",
+    tiers: [
+      { phase: 2, name: "Tuck front lever",         type: "hold", gate: { seconds: 20 }, notes: "Knees to chest, back parallel to floor." },
+      { phase: 2, name: "Advanced tuck front lever", type: "hold", gate: { seconds: 15 }, notes: "Phase 2 milestone. Hips fully open, knees off chest.", milestone: true },
+      { phase: 3, name: "Single-leg front lever",    type: "hold", gate: { seconds: 10, perSide: true }, notes: "One leg out, one tucked." },
+      { phase: 3, name: "Straddle front lever",      type: "hold", gate: { seconds: 5 },  notes: "Phase 3 milestone. Wide legs, body parallel.", milestone: true },
+      { phase: 4, name: "Full front lever",          type: "hold", gate: { seconds: 5 },  notes: "Body fully straight and parallel.", milestone: true }
+    ]
+  },
+  {
+    id: "backlever",
+    name: "Back lever progression",
+    stream: "pull",
+    tiers: [
+      { phase: 2, name: "Tuck back lever",          type: "hold", gate: { seconds: 10 }, notes: "Phase 2 milestone. Inverted, knees to chest, body parallel.", milestone: true },
+      { phase: 3, name: "Advanced tuck back lever", type: "hold", gate: { seconds: 10 }, notes: "Knees out of chest, back flat." },
+      { phase: 3, name: "Straddle back lever",      type: "hold", gate: { seconds: 10 }, notes: "Phase 3 milestone. Wide legs, body parallel.", milestone: true },
+      { phase: 4, name: "Full back lever",          type: "hold", gate: { seconds: 10 }, notes: "Body fully extended, parallel to floor.", milestone: true }
+    ]
+  },
+  {
+    id: "muscleup",
+    name: "Muscle-up progression",
+    stream: "pull",
+    tiers: [
+      { phase: 3, name: "High pull-up (chest-to-bar)", type: "reps", gate: { reps: 3, sets: 3 } },
+      { phase: 3, name: "False-grip pull-up",          type: "reps", gate: { reps: 5, sets: 3 }, notes: "Wrists over the bar." },
+      { phase: 3, name: "Bar muscle-up negative",       type: "reps", gate: { reps: 3, sets: 3 }, notes: "5s eccentric from support." },
+      { phase: 3, name: "Strict bar muscle-up",         type: "reps", gate: { reps: 1, sets: 1 }, notes: "Phase 3 milestone. No kip.", milestone: true },
+      { phase: 4, name: "Ring muscle-up",               type: "reps", gate: { reps: 1, sets: 1 }, notes: "Phase 4 milestone. Strict, false grip.", milestone: true }
+    ]
+  },
+
+  // ============= CORE / LEVERS =============
+  {
+    id: "hollow",
+    name: "Hollow body",
+    stream: "core",
+    tiers: [
+      { phase: 1, name: "Hollow body hold", type: "hold", gate: { seconds: 60 }, notes: "Phase 1 milestone. Lower back pressed flat to floor.", milestone: true }
+    ]
+  },
+  {
+    id: "arch",
+    name: "Arch / superman",
+    stream: "core",
+    tiers: [
+      { phase: 1, name: "Arch / superman hold", type: "hold", gate: { seconds: 60 }, notes: "Phase 1 milestone. Lift chest and quads off floor.", milestone: true }
+    ]
+  },
+  {
+    id: "lsit",
+    name: "L-sit progression",
+    stream: "core",
+    tiers: [
+      { phase: 2, name: "Tucked L-sit",   type: "hold", gate: { seconds: 30 } },
+      { phase: 2, name: "L-sit (parallettes)", type: "hold", gate: { seconds: 15 }, notes: "Phase 2 milestone. Legs straight and parallel.", milestone: true },
+      { phase: 3, name: "Straddle V-sit", type: "hold", gate: { seconds: 5 },  notes: "Legs above parallel, wide." }
+    ]
+  },
+
+  // ============= LEGS =============
+  {
+    id: "squat",
+    name: "Squat / unilateral",
+    stream: "legs",
+    tiers: [
+      { phase: 1, name: "Bodyweight squat", type: "reps", gate: { reps: 25, sets: 3 } },
+      { phase: 1, name: "Split squat",       type: "reps", gate: { reps: 20, sets: 3, perSide: true }, notes: "Phase 1 milestone. Vertical shin in front leg.", milestone: true },
+      { phase: 2, name: "Assisted pistol",   type: "reps", gate: { reps: 5,  sets: 3, perSide: true }, notes: "Hold a doorframe or TRX." },
+      { phase: 2, name: "Pistol squat",      type: "reps", gate: { reps: 3,  sets: 1, perSide: true }, notes: "Phase 2 milestone. Heel stays planted.", milestone: true },
+      { phase: 3, name: "Shrimp squat",      type: "reps", gate: { reps: 3,  sets: 1, perSide: true }, notes: "Hold back foot in hand; knee touches the floor." }
+    ]
+  },
+  {
+    id: "hamstring",
+    name: "Posterior chain",
+    stream: "legs",
+    tiers: [
+      { phase: 3, name: "Nordic curl (assisted)", type: "reps", gate: { reps: 5, sets: 3 }, notes: "Slow eccentric, push back up with arms." },
+      { phase: 4, name: "Nordic curl (full)",     type: "reps", gate: { reps: 3, sets: 3 }, notes: "Full eccentric without assistance." }
+    ]
+  }
+];
+
+const PHASES = [
+  { id: 1, name: "Foundation",          subtitle: "Months 0-3",  goal: "Build the strength floor that protects joints once leverage skills begin." },
+  { id: 2, name: "Skill Introduction",  subtitle: "Months 3-9",  goal: "Introduce static holds in their easiest leverage. Hold work is volume-based — accumulate 30-60s total per skill per session in short sets." },
+  { id: 3, name: "Intermediate",        subtitle: "Months 9-18", goal: "Progress slows. Track holds in seconds, not just reps. Frequency beats volume." },
+  { id: 4, name: "Advanced",            subtitle: "18+ Months",  goal: "Named skills. Long timelines. Sub-maximal frequent practice with one true working set near, not at, failure." }
+];
+
+const STREAMS = {
+  push: "Push",
+  pull: "Pull",
+  core: "Core & levers",
+  legs: "Legs"
+};
+
+// ============================================================
+// STATE
+// ============================================================
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let uid = null;
+let state = {
+  currentPhase: 1,
+  gateThreshold: 3, // sessions at gate to advance tier
+  viewPhase: 1,    // which phase tab is selected
+  skills: {},       // skillId -> { currentTierIdx, gatesHit, bestValue, lastSession }
+  recentSessions: {} // skillId -> [last 5 sessions]
+};
+let activeCardId = null;
+let unsub = null;
+let settingsOpen = false;
+
+// ============================================================
+// AUTH
+// ============================================================
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    uid = user.uid;
+    document.getElementById("authStatus").textContent = "synced";
+    document.getElementById("authStatus").classList.add("ok");
+    await loadState();
+    subscribeState();
+  } else {
+    try {
+      await signInAnonymously(auth);
+    } catch (e) {
+      document.getElementById("authStatus").textContent = "offline";
+      renderSetup(e.message);
+    }
+  }
+});
+
+if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+  renderSetup();
+} else {
+  // Auto-trigger anonymous sign-in
+  signInAnonymously(auth).catch(e => {
+    renderSetup(e.message);
+  });
+}
+
+function renderSetup(error) {
+  document.getElementById("main").innerHTML = `
+    <div class="setup">
+      <h2 style="margin-bottom: 12px; font-size: 18px;">First-time setup</h2>
+      <p style="color: var(--text-muted); font-size: 14px;">Open this file in an editor and replace the <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">firebaseConfig</code> block near the top of the &lt;script&gt; with your project values from the Firebase console.</p>
+      <code>const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};</code>
+      ${error ? `<p style="color: var(--danger); margin-top: 16px; font-size: 13px;">${error}</p>` : ""}
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Enable Anonymous Authentication and Firestore in the Firebase console. That's all.</p>
+    </div>
+  `;
+}
+
+// ============================================================
+// DATA
+// ============================================================
+function userDocRef() { return doc(db, "users", uid); }
+function sessionsRef() { return collection(db, "users", uid, "sessions"); }
+
+async function loadState() {
+  const snap = await getDoc(userDocRef());
+  if (snap.exists()) {
+    const data = snap.data();
+    state.currentPhase = data.currentPhase || 1;
+    state.gateThreshold = data.gateThreshold || 3;
+    state.skills = data.skills || {};
+    state.viewPhase = data.currentPhase || 1;
+  } else {
+    // Initialize each skill at tier 0
+    for (const s of SKILLS) {
+      state.skills[s.id] = { currentTierIdx: 0, gatesHit: 0, bestValue: 0, lastSession: null };
+    }
+    await saveState();
+  }
+  // Load recent sessions
+  await loadRecentSessions();
+  render();
+}
+
+async function loadRecentSessions() {
+  const q = query(sessionsRef(), orderBy("date", "desc"), limit(100));
+  const snaps = await getDocs(q);
+  state.recentSessions = {};
+  snaps.forEach(d => {
+    const data = d.data();
+    if (!state.recentSessions[data.skillId]) state.recentSessions[data.skillId] = [];
+    if (state.recentSessions[data.skillId].length < 5) {
+      state.recentSessions[data.skillId].push({ ...data, id: d.id });
+    }
+  });
+}
+
+function subscribeState() {
+  if (unsub) unsub();
+  unsub = onSnapshot(userDocRef(), (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    state.currentPhase = data.currentPhase || 1;
+    state.gateThreshold = data.gateThreshold || 3;
+    state.skills = data.skills || state.skills;
+    // Don't override viewPhase on snapshot — that's local UI state
+    render();
+  });
+}
+
+async function saveState() {
+  await setDoc(userDocRef(), {
+    currentPhase: state.currentPhase,
+    gateThreshold: state.gateThreshold,
+    skills: state.skills,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+}
+
+async function logSession(skillId, sessionData) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const tier = skill.tiers[state.skills[skillId].currentTierIdx];
+  const gateMet = sessionMeetsGate(sessionData, tier);
+
+  const entry = {
+    skillId,
+    tierIdx: state.skills[skillId].currentTierIdx,
+    tierName: tier.name,
+    type: tier.type,
+    value: tier.type === "hold" ? sessionData.seconds : sessionData.reps,
+    sets: sessionData.sets || 1,
+    gateMet,
+    date: serverTimestamp()
+  };
+  await addDoc(sessionsRef(), entry);
+
+  // Update best
+  const curBest = state.skills[skillId].bestValue || 0;
+  const thisValue = entry.value;
+  if (thisValue > curBest) state.skills[skillId].bestValue = thisValue;
+
+  // Increment gate counter if met
+  if (gateMet) {
+    state.skills[skillId].gatesHit = (state.skills[skillId].gatesHit || 0) + 1;
+  }
+  state.skills[skillId].lastSession = Date.now();
+
+  await saveState();
+  await loadRecentSessions();
+  showToast(gateMet ? `Gate hit. ${state.skills[skillId].gatesHit}/${state.gateThreshold} sessions.` : "Logged.");
+  render();
+}
+
+function sessionMeetsGate(sessionData, tier) {
+  if (tier.type === "hold") {
+    return sessionData.seconds >= tier.gate.seconds;
+  } else {
+    const repsMet = sessionData.reps >= tier.gate.reps;
+    const setsMet = (sessionData.sets || 1) >= (tier.gate.sets || 1);
+    return repsMet && setsMet;
+  }
+}
+
+async function advanceTier(skillId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const cur = state.skills[skillId];
+  if (cur.currentTierIdx < skill.tiers.length - 1) {
+    cur.currentTierIdx += 1;
+    cur.gatesHit = 0;
+    cur.bestValue = 0;
+    await saveState();
+    showToast(`Advanced to ${skill.tiers[cur.currentTierIdx].name}.`);
+    render();
+  }
+}
+
+async function regressTier(skillId) {
+  const cur = state.skills[skillId];
+  if (cur.currentTierIdx > 0) {
+    cur.currentTierIdx -= 1;
+    cur.gatesHit = 0;
+    cur.bestValue = 0;
+    await saveState();
+    showToast("Stepped back one tier.");
+    render();
+  }
+}
+
+async function advancePhase() {
+  if (state.currentPhase < 4) {
+    state.currentPhase += 1;
+    state.viewPhase = state.currentPhase;
+    await saveState();
+    showToast(`Phase ${state.currentPhase}. Onward.`);
+    render();
+  }
+}
+
+window.resetAll = async function() {
+  if (!confirm("Reset everything? All progress and history will be deleted.")) return;
+  // Delete all session docs
+  const snaps = await getDocs(sessionsRef());
+  for (const d of snaps.docs) await deleteDoc(d.ref);
+  // Reset state
+  state.currentPhase = 1;
+  state.gateThreshold = 3;
+  state.viewPhase = 1;
+  state.skills = {};
+  for (const s of SKILLS) {
+    state.skills[s.id] = { currentTierIdx: 0, gatesHit: 0, bestValue: 0, lastSession: null };
+  }
+  state.recentSessions = {};
+  await saveState();
+  render();
+  showToast("Reset complete.");
+};
+
+window.exportData = async function() {
+  const snaps = await getDocs(query(sessionsRef(), orderBy("date", "desc")));
+  const sessions = snaps.docs.map(d => ({ id: d.id, ...d.data(), date: d.data().date?.toDate?.()?.toISOString() }));
+  const blob = new Blob([JSON.stringify({ state, sessions }, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `progression-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.toggleSettings = function() {
+  settingsOpen = !settingsOpen;
+  render();
+};
+
+window.changeThreshold = async function(delta) {
+  const newVal = Math.max(1, Math.min(10, state.gateThreshold + delta));
+  state.gateThreshold = newVal;
+  await saveState();
+  render();
+};
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  renderPhaseTabs();
+  renderMain();
+  renderSettings();
+}
+
+function renderPhaseTabs() {
+  const el = document.getElementById("phaseTabs");
+  el.innerHTML = PHASES.map(p => {
+    const locked = p.id > state.currentPhase;
+    const active = p.id === state.viewPhase;
+    return `<button class="phase-tab ${active ? 'active' : ''} ${locked ? 'locked' : ''}" onclick="window.setViewPhase(${p.id})">Phase ${p.id}</button>`;
+  }).join("");
+}
+
+window.setViewPhase = function(p) {
+  state.viewPhase = p;
+  render();
+};
+
+function renderMain() {
+  const phase = PHASES[state.viewPhase - 1];
+  const skillsInPhase = SKILLS.filter(s => s.tiers.some(t => t.phase === state.viewPhase));
+
+  // Phase milestone progress
+  const milestonesInPhase = SKILLS.flatMap(s =>
+    s.tiers.map((t, idx) => ({ skill: s, tier: t, idx }))
+  ).filter(m => m.tier.phase === state.viewPhase && m.tier.milestone);
+
+  const milestonesHit = milestonesInPhase.filter(m => {
+    const cur = state.skills[m.skill.id];
+    return cur && cur.currentTierIdx > m.idx;
+  }).length;
+
+  const phaseComplete = milestonesHit >= milestonesInPhase.length && milestonesInPhase.length > 0;
+  const isCurrentPhase = state.viewPhase === state.currentPhase;
+
+  let html = `
+    <div class="phase-header">
+      <div class="phase-eyebrow">
+        <span class="dot"></span>
+        ${isCurrentPhase ? "Active phase" : (state.viewPhase < state.currentPhase ? "Past phase" : "Upcoming")}
+      </div>
+      <div class="phase-name">${phase.name}</div>
+      <div class="phase-sub">${phase.subtitle}</div>
+      <div class="phase-goal">${phase.goal}</div>
+      <div class="phase-progress">
+        <span>${milestonesHit}/${milestonesInPhase.length}</span>
+        <div class="progress-track"><div class="progress-fill" style="width: ${milestonesInPhase.length ? (milestonesHit / milestonesInPhase.length * 100) : 0}%"></div></div>
+        <span>milestones</span>
+      </div>
+    </div>
+  `;
+
+  if (phaseComplete && isCurrentPhase && state.currentPhase < 4) {
+    html += `
+      <div class="phase-complete-banner">
+        <div>Phase ${state.currentPhase} complete. Ready for ${PHASES[state.currentPhase].name}.</div>
+        <button onclick="window.advancePhase()">Advance phase</button>
+      </div>
+    `;
+  }
+
+  // Group by stream
+  for (const streamKey of Object.keys(STREAMS)) {
+    const streamSkills = skillsInPhase.filter(s => s.stream === streamKey);
+    if (!streamSkills.length) continue;
+    html += `<div class="stream-section">
+      <div class="stream-label">${STREAMS[streamKey]}</div>`;
+    for (const skill of streamSkills) {
+      html += renderSkillCard(skill);
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById("main").innerHTML = html;
+
+  // Re-attach the active card open class if needed
+  if (activeCardId) {
+    const card = document.querySelector(`[data-skill-id="${activeCardId}"]`);
+    if (card) card.classList.add("open");
+  }
+}
+
+function renderSkillCard(skill) {
+  const cur = state.skills[skill.id] || { currentTierIdx: 0, gatesHit: 0, bestValue: 0 };
+  const tier = skill.tiers[cur.currentTierIdx];
+  const lastTier = skill.tiers[skill.tiers.length - 1];
+
+  // If the user has advanced past all tiers, show as complete
+  const allDone = cur.currentTierIdx >= skill.tiers.length;
+  const displayTier = allDone ? lastTier : tier;
+  const displayIdx = allDone ? skill.tiers.length - 1 : cur.currentTierIdx;
+
+  // If this skill's current tier is not in the viewed phase, show its state contextually
+  const tierInViewPhase = displayTier.phase === state.viewPhase;
+  const aheadOfView = displayTier.phase > state.viewPhase;
+  const behindView = displayTier.phase < state.viewPhase;
+
+  // Find what tier IS in this phase for this skill
+  const tiersInPhase = skill.tiers.filter(t => t.phase === state.viewPhase);
+
+  let cardTier, cardTierIdx, cardStatus;
+  if (tierInViewPhase) {
+    cardTier = displayTier;
+    cardTierIdx = displayIdx;
+    cardStatus = "active";
+  } else if (aheadOfView) {
+    // Already past this phase's tiers for this skill
+    const lastInPhase = tiersInPhase[tiersInPhase.length - 1];
+    cardTier = lastInPhase;
+    cardTierIdx = skill.tiers.indexOf(lastInPhase);
+    cardStatus = "complete";
+  } else {
+    // Hasn't reached this phase yet — show first tier in this phase
+    const firstInPhase = tiersInPhase[0];
+    cardTier = firstInPhase;
+    cardTierIdx = skill.tiers.indexOf(firstInPhase);
+    cardStatus = "upcoming";
+  }
+
+  const isActive = cardStatus === "active";
+  const showLogging = isActive && !allDone;
+
+  const valueDisplay = formatValue(cur.bestValue, cardTier);
+  const targetDisplay = formatGate(cardTier);
+  const targetMet = cur.bestValue > 0 && bestMeetsGate(cur.bestValue, cardTier);
+
+  const gateThreshold = state.gateThreshold;
+  const gatesHit = isActive ? (cur.gatesHit || 0) : 0;
+  const canAdvanceTier = isActive && gatesHit >= gateThreshold;
+
+  // Pips
+  let pipsHtml = "";
+  if (isActive) {
+    pipsHtml = `<div class="gate-pips">
+      <span class="gate-label">Gate</span>
+      ${Array.from({ length: gateThreshold }, (_, i) =>
+        `<div class="pip ${i < gatesHit ? 'filled' : ''}"></div>`
+      ).join("")}
+    </div>`;
+  }
+
+  const recentSessions = state.recentSessions[skill.id] || [];
+
+  return `
+    <div class="skill-card ${cardStatus === 'complete' ? 'complete' : ''}" data-skill-id="${skill.id}">
+      <div class="skill-head" onclick="window.toggleCard('${skill.id}')">
+        <div class="skill-info">
+          <div class="skill-name">
+            ${cardStatus === 'complete' ? '<span class="check">✓</span>' : ''}
+            ${skill.name}
+          </div>
+          <div class="tier-name">
+            ${cardStatus === 'upcoming' ? 'starts at: ' : ''}${cardTier.name}
+          </div>
+        </div>
+        <div class="readout">
+          <div class="readout-value">
+            ${valueDisplay.value}<span class="unit">${valueDisplay.unit}</span>
+          </div>
+          <div class="readout-target ${targetMet ? 'met' : ''}">${targetDisplay}</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      ${pipsHtml}
+      <div class="skill-body">
+        ${cardTier.notes ? `<div class="skill-notes">${cardTier.notes}</div>` : ''}
+        ${canAdvanceTier ? `
+          <div class="advance-banner">
+            <div>Gate hit ${gatesHit} times. Ready to advance.</div>
+            <button onclick="window.advanceTier('${skill.id}')">Advance tier</button>
+          </div>
+        ` : ''}
+        ${showLogging ? renderLogForm(skill.id, cardTier) : ''}
+        ${recentSessions.length > 0 ? renderHistory(recentSessions, skill.id) : ''}
+        ${isActive ? `
+          <div class="tier-controls">
+            ${cur.currentTierIdx > 0 ? `<button class="btn ghost" onclick="window.regressTier('${skill.id}')">Step back tier</button>` : ''}
+            ${cur.currentTierIdx < skill.tiers.length - 1 ? `<button class="btn ghost" onclick="window.manualAdvance('${skill.id}')">Advance anyway</button>` : ''}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderLogForm(skillId, tier) {
+  if (tier.type === "hold") {
+    return `
+      <div class="log-row">
+        <div class="input-group">
+          <label>Hold</label>
+          <input type="number" id="log-${skillId}-seconds" placeholder="0" inputmode="numeric" />
+          <span class="unit">sec</span>
+        </div>
+        <button class="btn accent" onclick="window.submitLog('${skillId}')">Log</button>
+      </div>
+    `;
+  } else {
+    return `
+      <div class="log-row">
+        <div class="input-group">
+          <label>Reps</label>
+          <input type="number" id="log-${skillId}-reps" placeholder="0" inputmode="numeric" />
+        </div>
+        <div class="input-group">
+          <label>Sets</label>
+          <input type="number" id="log-${skillId}-sets" placeholder="${tier.gate.sets || 1}" value="${tier.gate.sets || 1}" inputmode="numeric" />
+        </div>
+        <button class="btn accent" onclick="window.submitLog('${skillId}')">Log</button>
+      </div>
+    `;
+  }
+}
+
+function renderHistory(sessions, skillId) {
+  return `
+    <div class="history">
+      <div class="history-label">Last sessions</div>
+      ${sessions.slice(0, 5).map(s => {
+        const date = s.date?.toDate?.() ?? new Date();
+        const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const valueStr = s.type === "hold" ? `${s.value}s` : `${s.value} × ${s.sets}`;
+        return `<div class="history-row ${s.gateMet ? 'gate' : ''}">
+          <span>${valueStr}${s.gateMet ? ' ✓' : ''}</span>
+          <span class="history-date">${dateStr}</span>
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function formatValue(value, tier) {
+  if (!value || value === 0) return { value: "—", unit: "" };
+  if (tier.type === "hold") return { value: value, unit: "s" };
+  return { value: value, unit: "" };
+}
+
+function formatGate(tier) {
+  if (tier.type === "hold") {
+    return `gate ${tier.gate.seconds}s`;
+  } else {
+    const sets = tier.gate.sets || 1;
+    const perSide = tier.gate.perSide ? "/side" : "";
+    return `gate ${tier.gate.reps}${perSide} × ${sets}`;
+  }
+}
+
+function bestMeetsGate(bestValue, tier) {
+  if (tier.type === "hold") return bestValue >= tier.gate.seconds;
+  return bestValue >= tier.gate.reps;
+}
+
+window.toggleCard = function(skillId) {
+  const card = document.querySelector(`[data-skill-id="${skillId}"]`);
+  if (!card) return;
+  if (card.classList.contains("open")) {
+    card.classList.remove("open");
+    activeCardId = null;
+  } else {
+    document.querySelectorAll('.skill-card.open').forEach(c => c.classList.remove("open"));
+    card.classList.add("open");
+    activeCardId = skillId;
+  }
+};
+
+window.submitLog = function(skillId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const tier = skill.tiers[state.skills[skillId].currentTierIdx];
+  if (tier.type === "hold") {
+    const secs = parseFloat(document.getElementById(`log-${skillId}-seconds`).value);
+    if (!secs || secs <= 0) { showToast("Enter a hold time."); return; }
+    logSession(skillId, { seconds: secs });
+  } else {
+    const reps = parseInt(document.getElementById(`log-${skillId}-reps`).value);
+    const sets = parseInt(document.getElementById(`log-${skillId}-sets`).value);
+    if (!reps || reps <= 0) { showToast("Enter reps."); return; }
+    logSession(skillId, { reps, sets: sets || 1 });
+  }
+};
+
+window.advanceTier = advanceTier;
+window.regressTier = regressTier;
+window.advancePhase = advancePhase;
+window.manualAdvance = async function(skillId) {
+  if (!confirm("Advance this tier without hitting the gate threshold?")) return;
+  await advanceTier(skillId);
+};
+
+function renderSettings() {
+  const panel = document.getElementById("settingsPanel");
+  if (!settingsOpen) {
+    panel.style.display = "none";
+    return;
+  }
+  panel.style.display = "block";
+  panel.innerHTML = `
+    <div class="settings-panel">
+      <div class="settings-row">
+        <label>Sessions to hit gate before tier advances</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn ghost" style="height:28px;padding:0 10px;" onclick="window.changeThreshold(-1)">−</button>
+          <span style="font-family:var(--mono);font-weight:600;min-width:24px;text-align:center;">${state.gateThreshold}</span>
+          <button class="btn ghost" style="height:28px;padding:0 10px;" onclick="window.changeThreshold(1)">+</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <label>Current phase</label>
+        <span style="font-family:var(--mono);">Phase ${state.currentPhase}</span>
+      </div>
+      <div class="settings-row">
+        <label>Account</label>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">${uid?.slice(0, 12) || 'not connected'}…</span>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+</script>
+</body>
+</html>
