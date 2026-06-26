@@ -648,6 +648,132 @@
     font-size: 13px;
   }
 
+  /* Week strip */
+  .week-strip {
+    display: flex;
+    gap: 4px;
+    padding: 10px 8px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+  }
+  .week-day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 2px;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+  }
+  .week-day.today {
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--text);
+  }
+  .day-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .week-day.today .day-label { color: var(--text); font-weight: 600; }
+  .day-marker {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .week-day.practice .day-marker { background: var(--accent); }
+  .week-day.practice.today .day-marker { box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* Rest screen */
+  .rest-screen {
+    background: var(--surface);
+    padding: 32px 24px;
+    border-radius: var(--radius);
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+  }
+  .rest-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rest-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .rest-body {
+    color: var(--text-muted);
+    margin: 0 auto 20px;
+    line-height: 1.6;
+    font-size: 14px;
+    max-width: 380px;
+  }
+  .rest-override-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .rest-override-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+  /* Schedule editor in settings */
+  .schedule-row {
+    display: block !important;
+    padding: 14px 0 !important;
+  }
+  .schedule-row .row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .schedule-toggles {
+    display: flex;
+    gap: 4px;
+  }
+  .schedule-toggle {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all 0.15s ease;
+  }
+  .schedule-toggle.on {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .schedule-summary {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 8px;
+    text-align: right;
+  }
+
   @media (max-width: 480px) {
     .skill-head { gap: 10px; padding: 12px 14px; }
     .readout { min-width: 70px; }
@@ -913,12 +1039,14 @@ let state = {
   viewMode: 'today',
   viewPhase: 1,
   deloadActive: false,
+  schedule: { 0: false, 1: true, 2: false, 3: true, 4: false, 5: true, 6: true }, // Sun-Sat; default Mon/Wed/Fri/Sat
   skills: {},          // skillId -> { currentTierIdx, gatesHit (number or {L,R}), bestValue, lastSession }
   recentSessions: {}   // skillId -> [last sessions]
 };
 let activeCardId = null;
 let unsub = null;
 let settingsOpen = false;
+let restDayOverride = false; // ephemeral — resets on reload/day change
 // Form state for in-progress logging — { skillId: { holdSets: [...], notes, reps, sets, side } }
 let formState = {};
 
@@ -978,6 +1106,7 @@ async function loadState() {
     state.currentPhase = data.currentPhase || 1;
     state.gateThreshold = data.gateThreshold || 3;
     state.deloadActive = data.deloadActive || false;
+    state.schedule = data.schedule || state.schedule;
     state.skills = data.skills || {};
     state.viewPhase = data.currentPhase || 1;
   } else {
@@ -1035,6 +1164,7 @@ function subscribeState() {
     state.currentPhase = data.currentPhase || 1;
     state.gateThreshold = data.gateThreshold || 3;
     state.deloadActive = data.deloadActive || false;
+    state.schedule = data.schedule || state.schedule;
     state.skills = data.skills || state.skills;
     render();
   });
@@ -1045,6 +1175,7 @@ async function saveState() {
     currentPhase: state.currentPhase,
     gateThreshold: state.gateThreshold,
     deloadActive: state.deloadActive,
+    schedule: state.schedule,
     skills: state.skills,
     updatedAt: serverTimestamp()
   }, { merge: true });
@@ -1202,6 +1333,35 @@ window.toggleDeload = async function() {
 };
 
 // ============================================================
+// SCHEDULE
+// ============================================================
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAY_SHORT = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+function todayDOW() { return new Date().getDay(); }
+function isPracticeToday() { return state.schedule[todayDOW()] === true; }
+
+function practiceDaysPerWeek() {
+  return Object.values(state.schedule).filter(v => v === true).length;
+}
+
+window.toggleScheduleDay = async function(dow) {
+  state.schedule[dow] = !state.schedule[dow];
+  await saveState();
+  render();
+};
+
+window.overrideRestDay = function() {
+  restDayOverride = true;
+  render();
+};
+
+window.cancelRestOverride = function() {
+  restDayOverride = false;
+  render();
+};
+
+// ============================================================
 // SESSION PLANNER
 // ============================================================
 function daysSince(ts) {
@@ -1304,10 +1464,24 @@ function renderMain() {
 }
 
 function renderToday() {
+  const isPractice = isPracticeToday();
+  const showRest = !isPractice && !restDayOverride;
+  const weekStripHtml = renderWeekStrip();
+
+  if (showRest) {
+    renderRestDay(weekStripHtml);
+    return;
+  }
+
   const session = buildTodaySession();
   const today = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  const overrideNotice = !isPractice && restDayOverride
+    ? `<div class="deload-banner" style="margin-top: 12px; background: var(--warn-soft); color: var(--warn); border-color: var(--warn);">
+        Training on a scheduled rest day. <button onclick="window.cancelRestOverride()" style="text-decoration: underline; color: inherit;">Cancel</button>
+       </div>`
+    : '';
 
-  let html = `
+  let html = weekStripHtml + `
     <div class="today-header">
       <div class="today-date">${today}</div>
       <div class="today-title">Today's session</div>
@@ -1318,6 +1492,7 @@ function renderToday() {
         }
       </div>
     </div>
+    ${overrideNotice}
   `;
 
   if (state.deloadActive) {
@@ -1332,7 +1507,6 @@ function renderToday() {
       <div>You're caught up. Train again when something goes stale.</div>
     </div>`;
   } else {
-    // Group rendered cards by stream for visual order
     const byStream = { push: [], pull: [], core: [], legs: [] };
     session.forEach(s => byStream[s.stream].push(s));
     for (const streamKey of Object.keys(STREAMS)) {
@@ -1349,6 +1523,35 @@ function renderToday() {
 
   document.getElementById("main").innerHTML = html;
   reattachActiveCard();
+}
+
+function renderRestDay(weekStripHtml) {
+  const today = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  const html = weekStripHtml + `
+    <div class="rest-screen">
+      <div class="rest-eyebrow">${today}</div>
+      <div class="rest-title">Rest day</div>
+      <div class="rest-body">
+        Recovery is when the adaptations happen. Sleep, eat, walk, mobility work — the gains from your last session land on days like today. Don't grind.
+      </div>
+      <button class="rest-override-btn" onclick="window.overrideRestDay()">Train anyway</button>
+    </div>
+  `;
+  document.getElementById("main").innerHTML = html;
+}
+
+function renderWeekStrip() {
+  const today = todayDOW();
+  return `<div class="week-strip">
+    ${WEEKDAY_SHORT.map((d, i) => {
+      const isPractice = state.schedule[i] === true;
+      const isToday = i === today;
+      return `<div class="week-day ${isToday ? 'today' : ''} ${isPractice ? 'practice' : 'rest'}" title="${WEEKDAYS[i]} · ${isPractice ? 'Practice' : 'Rest'}">
+        <div class="day-label">${d}</div>
+        <div class="day-marker"></div>
+      </div>`;
+    }).join('')}
+  </div>`;
 }
 
 function renderPhases() {
@@ -1813,6 +2016,20 @@ function renderSettings() {
   panel.style.display = "block";
   panel.innerHTML = `
     <div class="settings-panel">
+      <div class="settings-row schedule-row">
+        <div class="row-top">
+          <div>
+            <label>Weekly schedule</label>
+            <div class="desc">Tap to toggle practice / rest days.</div>
+          </div>
+        </div>
+        <div class="schedule-toggles">
+          ${WEEKDAYS.map((d, i) => `
+            <button class="schedule-toggle ${state.schedule[i] ? 'on' : ''}" onclick="window.toggleScheduleDay(${i})">${d}</button>
+          `).join('')}
+        </div>
+        <div class="schedule-summary">${practiceDaysPerWeek()} practice ${practiceDaysPerWeek() === 1 ? 'day' : 'days'} / week</div>
+      </div>
       <div class="settings-row">
         <div>
           <label>Deload week</label>
